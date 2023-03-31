@@ -25,38 +25,52 @@ app.assetManager:add(assets)
 
 -- These are the assets that are visible in Allo (axis: x, y, z, scale: 1, 1, 1)
 
-local bounds_for_wheelstand = ui.Bounds(0, 0, 0, 1, 1, 1)
-local wheelstand_view = ui.ModelView(bounds_for_wheelstand, assets.ferris_wheelstand)
+local wheelstand_view = ui.ModelView(
+    ui.Bounds(0, 0, 0, 1, 1, 1),
+    assets.ferris_wheelstand
+)
 
-local bounds_for_wheel = ui.Bounds(0, 0, 0, 1, 1, 1)
-local wheel_view = ui.ModelView(bounds_for_wheel, assets.ferris_wheel)
+local wheel_view = ui.ModelView(
+    ui.Bounds(0, 0, 0, 1, 1, 1),
+    assets.ferris_wheel
+)
 
-local bounds_for_wheelcart = ui.Bounds(11, 0, -1, 1, 1, 1)
-local wheelcart = ui.View(bounds_for_wheelcart)
+-- Gets the bounding box for the model
+local bb = assets.ferris_wheelcart:model():getAABB()
+local wheelcart_view = ui.ModelView(
+    ui.Bounds(0, 0, 0, bb.size.x, bb.size.y, bb.size.z),
+    assets.ferris_wheelcart
+)
+-- Makes it touchable
+wheelcart_view.collider = bb
 
-
-local bounds_for_wheelcart = ui.Bounds(0, 0, 0, 1, 1, 1)
-local wheelcart_view = ui.ModelView(bounds_for_wheelstand, assets.ferris_wheelcart)
-
+-- Holds the wheelcart_view in place; wrapper for cart rotation
+local wheelcart = ui.View(
+    ui.Bounds(11, 0, -1, 1, 1, 1)
+)
 
 -- This is the the Parent/Child objects
-
 wheelstand_view:addSubview(wheel_view)
 wheelcart:addSubview(wheelcart_view)
-wheel_view:addSubview(wheelcart)  
+wheel_view:addSubview(wheelcart)
+
+
+-- When user touches the cart
+wheelcart_view.onTouchDown = function(self, pointer)
+    local avatar = pointer.hand:getParent()
+    -- TODO: set avatar parent to cart
+    print(avatar)
+end
 
 
 app.mainView = wheelstand_view
 
 -- This is the animation to the assets
-wheelcart_view:setBounds(bounds_for_wheelcart)
+
 app:scheduleAction(0.05, true, function ()
     -- function bounds:rotate(angle, x, y, z) d
-        wheel_view:setBounds(wheel_view.bounds:rotate(0.03, 0, 0, 1))
-
-            -- function bounds:rotate(angle, x, y, z)
-                 wheelcart_view:setBounds(wheelcart_view.bounds:rotate(0.03, 0, 0, -1))
-                 
+    wheel_view:setBounds(wheel_view.bounds:rotate(0.03, 0, 0, 1))
+    wheelcart_view:setBounds(wheelcart_view.bounds:rotate(0.03, 0, 0, -1))
 end)
 
 
