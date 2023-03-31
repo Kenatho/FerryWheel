@@ -60,17 +60,22 @@ wheelcart_view.onTouchDown = function(self, pointer)
     local avatar = pointer.hand:getParent()
     -- TODO: set avatar parent to cart
     print(avatar)
+    app:updateComponents(avatar, {
+        relationships = {
+            parent = wheelcart_view.entity.id
+        }
+    })
 end
 
 
 app.mainView = wheelstand_view
 
 -- This is the animation to the assets
-
+local speed = 0.01
 app:scheduleAction(0.05, true, function ()
     -- function bounds:rotate(angle, x, y, z) d
-    wheel_view:setBounds(wheel_view.bounds:rotate(0.03, 0, 0, 1))
-    wheelcart_view:setBounds(wheelcart_view.bounds:rotate(0.03, 0, 0, -1))
+    wheel_view:setBounds(wheel_view.bounds:rotate(speed, 0, 0, 1))
+    wheelcart_view:setBounds(wheelcart_view.bounds:rotate(speed, 0, 0, -1))
 end)
 
 
