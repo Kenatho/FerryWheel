@@ -35,37 +35,58 @@ local wheel_view = ui.ModelView(
     assets.ferris_wheel
 )
 
+local manycarts = ui.View(
+    ui.Bounds(0, 0, 0, 1, 1, 1)
+)
+
 -- Gets the bounding box for the model
 local bb = assets.ferris_wheelcart:model():getAABB()
-local wheelcart_view = ui.ModelView(
-    ui.Bounds(0, 0, 0, bb.size.x, bb.size.y, bb.size.z),
-    assets.ferris_wheelcart
-)
--- Makes it touchable
-wheelcart_view.collider = bb
 
--- Holds the wheelcart_view in place; wrapper for cart rotation
-local wheelcart = ui.View(
-    ui.Bounds(11, 0, -1, 1, 1, 1)
+local carts = {}
+
+for i = 1, 6 do
+    local wheelcart_view = ui.ModelView(
+        ui.Bounds(0, 0, 0, bb.size.x, bb.size.y, bb.size.z),
+        assets.ferris_wheelcart
+    )
+    -- Makes it touchable
+    wheelcart_view.collider = bb
+
+    -- Holds the wheelcart_view in place; wrapper for cart rotation (Empty Object parented with the wheelcart)
+    local wheelcart = ui.View(
+        ui.Bounds(11 * math.cos(math.pi/3 * i), 11 * math.sin(math.pi/3 * i), -1, 1, 1, 1)
+    )
+
+    wheelcart_view.onTouchDown = function(self, pointer)
+        local avatar = pointer.hand:getParent()
+        -- TODO: set avatar parent to cart
+        print(avatar)
+        app:updateComponents(avatar, {
+            relationships = {
+                parent = wheelcart_view.entity.id
+            }
+        })
+    end
+
+    wheelcart:addSubview(wheelcart_view)
+
+    manycarts:addSubview(wheelcart)
+    table.insert(carts, wheelcart_view)
+end 
+
+-- Empty object for the center of the ferry wheel to help it rotate properly
+local wheelcenter = ui.View(
+    ui.Bounds(0, 15, 0, 1 ,1 ,1)
 )
 
 -- This is the the Parent/Child objects
-wheelstand_view:addSubview(wheel_view)
-wheelcart:addSubview(wheelcart_view)
-wheel_view:addSubview(wheelcart)
+wheelstand_view:addSubview(wheelcenter)
+wheelcenter:addSubview(wheel_view)
+wheel_view:addSubview(manycarts)
 
 
 -- When user touches the cart
-wheelcart_view.onTouchDown = function(self, pointer)
-    local avatar = pointer.hand:getParent()
-    -- TODO: set avatar parent to cart
-    print(avatar)
-    app:updateComponents(avatar, {
-        relationships = {
-            parent = wheelcart_view.entity.id
-        }
-    })
-end
+
 
 
 app.mainView = wheelstand_view
@@ -73,9 +94,12 @@ app.mainView = wheelstand_view
 -- This is the animation to the assets
 local speed = 0.01
 app:scheduleAction(0.05, true, function ()
+    for i, cart in ipairs(carts) do 
+       cart:setBounds(cart.bounds:rotate(speed, 0, 0, -1))
+    end
     -- function bounds:rotate(angle, x, y, z) d
     wheel_view:setBounds(wheel_view.bounds:rotate(speed, 0, 0, 1))
-    wheelcart_view:setBounds(wheelcart_view.bounds:rotate(speed, 0, 0, -1))
+    
 end)
 
 
