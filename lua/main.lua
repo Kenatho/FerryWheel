@@ -68,7 +68,21 @@ for i = 1, 6 do
         })
     end
 
+    -- Parenting empty objects with the wheelcart along with a smoother animation with the help of (PropertyANimation)
     wheelcart:addSubview(wheelcart_view)
+
+    wheelcart_view:doWhenAwake(function() 
+        wheelcart_view:addPropertyAnimation(ui.PropertyAnimation{
+            path= "transform.matrix.rotation.z",
+            start_at = app:serverTime() + 1.0, 
+            from= -0,
+            to=   math.pi * -2,
+            duration = 30.0,
+            repeats= true,
+            autoreverses= false,
+            easing= "linear",
+        })    
+    end)
 
     manycarts:addSubview(wheelcart)
     table.insert(carts, wheelcart_view)
@@ -85,23 +99,36 @@ wheelcenter:addSubview(wheel_view)
 wheel_view:addSubview(manycarts)
 
 
--- When user touches the cart
 
+
+-- PropertyAnimation
+
+wheel_view:doWhenAwake(function() 
+    wheel_view:addPropertyAnimation(ui.PropertyAnimation{
+        path= "transform.matrix.rotation.z",
+        start_at = app:serverTime() + 1.0, 
+        from= -0,
+        to=   math.pi * 2,
+        duration = 30.0,
+        repeats= true,
+        autoreverses= false,
+        easing= "linear",
+    })    
+end)
 
 
 app.mainView = wheelstand_view
 
 -- This is the animation to the assets
-local speed = 0.01
-app:scheduleAction(0.05, true, function ()
-    for i, cart in ipairs(carts) do 
-       cart:setBounds(cart.bounds:rotate(speed, 0, 0, -1))
-    end
+-- local speed = 0.01
+-- app:scheduleAction(0.05, true, function ()
+ ----   for i, cart in ipairs(carts) do 
+     --  cart:setBounds(cart.bounds:rotate(speed, 0, 0, -1))
+ --   end
     -- function bounds:rotate(angle, x, y, z) d
-    wheel_view:setBounds(wheel_view.bounds:rotate(speed, 0, 0, 1))
+--    wheel_view:setBounds(wheel_view.bounds:rotate(speed, 0, 0, 1))
     
-end)
-
+-- end)
 
 
 
