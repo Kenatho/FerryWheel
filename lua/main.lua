@@ -59,13 +59,18 @@ for i = 1, 6 do
 
     wheelcart_view.onTouchDown = function(self, pointer)
         local avatar = pointer.hand:getParent()
-        -- TODO: set avatar parent to cart
-        print(avatar)
-        app:updateComponents(avatar, {
-            relationships = {
-                parent = wheelcart_view.entity.id
-            }
-        })
+        print("touchedcart")
+        if avatar.components.relationships == nil or avatar.components.relationships.parent == nil then 
+            print("addingparent")
+            app:updateComponents(avatar, {
+                relationships = {
+                    parent = wheelcart_view.entity.id
+                }
+            })
+        else 
+            print("removingparent")
+            app:updateComponents(avatar, {}, {"relationships"})
+        end
     end
 
     -- Parenting empty objects with the wheelcart along with a smoother animation with the help of (PropertyANimation)
