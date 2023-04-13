@@ -69,7 +69,10 @@ for i = 1, 6 do
             })
         else 
             print("removingparent")
-            app:updateComponents(avatar, {}, {"relationships"})
+            app:updateComponents(avatar, {
+                relationships = {
+                }
+            })
         end
     end
 
@@ -121,7 +124,7 @@ wheel_view:doWhenAwake(function()
     })    
 end)
 
-
+ 
 app.mainView = wheelstand_view
 
 -- This is the animation to the assets
