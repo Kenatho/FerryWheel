@@ -57,21 +57,24 @@ for i = 1, 6 do
         ui.Bounds(11 * math.cos(math.pi/3 * i), 11 * math.sin(math.pi/3 * i), -1, 1, 1, 1)
     )
 
+    -- A dummy view to offset the avatar to the ground of the cart
+    local avatarOffsetView = ui.View()
+    avatarOffsetView.bounds:move(0, -3, 0)
+    wheelcart_view:addSubview(avatarOffsetView)
+   
+
     wheelcart_view.onTouchDown = function(self, pointer)
         local avatar = pointer.hand:getParent()
-        print("touchedcart")
+
         if avatar.components.relationships == nil or avatar.components.relationships.parent == nil then 
-            print("addingparent")
             app:updateComponents(avatar, {
                 relationships = {
-                    parent = wheelcart_view.entity.id
+                    parent = avatarOffsetView.entity.id
                 }
             })
         else 
-            print("removingparent")
             app:updateComponents(avatar, {
-                relationships = {
-                }
+                relationships = {}
             })
         end
     end
@@ -81,15 +84,15 @@ for i = 1, 6 do
 
     wheelcart_view:doWhenAwake(function() 
         wheelcart_view:addPropertyAnimation(ui.PropertyAnimation{
-            path= "transform.matrix.rotation.z",
+            path = "transform.matrix.rotation.z",
             start_at = app:serverTime() + 1.0, 
-            from= -0,
-            to=   math.pi * -2,
+            from = 0,
+            to =  math.pi * -2,
             duration = 30.0,
-            repeats= true,
-            autoreverses= false,
-            easing= "linear",
-        })    
+            repeats = true,
+            autoreverses = false,
+            easing = "linear",
+        })
     end)
 
     manycarts:addSubview(wheelcart)
