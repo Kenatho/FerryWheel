@@ -19,14 +19,53 @@ assets = {
     quit = ui.Asset.File("images/quit.png"),
     ferris_wheelstand = ui.Asset.File("models/FerryWheelStand.glb"),
     ferris_wheel = ui.Asset.File("models/FerryWheel.glb"),
-    ferris_wheelcart = ui.Asset.File("models/FerryWheelCart.glb")
+    ferris_wheelcart = ui.Asset.File("models/FerryWheelCart.glb"),
+    theme_park = ui.Asset.File("models/ThemePark.glb"),
+    burger = ui.Asset.File("models/Burger.glb"),
+    burger2 = ui.Asset.File("models/Burger2.glb"),
+    burger3 = ui.Asset.File("models/Burger3.glb"),
+    burger4 = ui.Asset.File("models/Burger4.glb"),
+    
 }
 app.assetManager:add(assets)
 
 -- These are the assets that are visible in Allo (axis: x, y, z, scale: 1, 1, 1)
 
+local burger = ui.ModelView(
+    ui.Bounds(55, 3.7, 50, 1, 1, 1),
+    assets.burger  
+)
+burger:setGrabbable(true)
+burger.hasCollider = true
+
+local burger2 = ui.ModelView(
+    ui.Bounds(50, 3.7, 50, 1, 1, 1),
+    assets.burger2  
+)
+burger2:setGrabbable(true)
+burger2.hasCollider = true
+
+local burger3 = ui.ModelView(
+    ui.Bounds(45, 3.7, 50, 1, 1, 1),
+    assets.burger3  
+)
+burger3:setGrabbable(true)
+burger3.hasCollider = true
+
+local burger4 = ui.ModelView(
+    ui.Bounds(40, 3.7, 50, 1, 1, 1),
+    assets.burger4  
+)
+burger4:setGrabbable(true)
+burger4.hasCollider = true
+
+local themepark_view = ui.ModelView(
+    ui.Bounds(0, -1.5, 0, 1, 1, 1),
+    assets.theme_park
+)
+
 local wheelstand_view = ui.ModelView(
-    ui.Bounds(0, 0, 0, 1, 1, 1),
+    ui.Bounds(40, 0, 0, 1, 1, 1),
     assets.ferris_wheelstand
 )
 
@@ -105,6 +144,11 @@ local wheelcenter = ui.View(
 )
 
 -- This is the the Parent/Child objects
+themepark_view:addSubview(burger)
+themepark_view:addSubview(burger2)
+themepark_view:addSubview(burger3)
+themepark_view:addSubview(burger4)
+themepark_view:addSubview(wheelstand_view)
 wheelstand_view:addSubview(wheelcenter)
 wheelcenter:addSubview(wheel_view)
 wheel_view:addSubview(manycarts)
@@ -128,7 +172,7 @@ wheel_view:doWhenAwake(function()
 end)
 
  
-app.mainView = wheelstand_view
+app.mainView = themepark_view
 
 -- This is the animation to the assets
 -- local speed = 0.01
